@@ -1,0 +1,24 @@
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - envFrom:
+          - secretRef:
+              name: drivenetcredentials
+          readinessProbe:
+            httpGet:
+              path: /api/v1/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/v1/healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5

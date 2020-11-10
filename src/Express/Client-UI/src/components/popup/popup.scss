@@ -1,0 +1,50 @@
+@import '../../styles/colours.scss';
+
+.popup-component {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: rgba($color: $primary, $alpha: 0.95);
+    z-index: 100;
+    display: none;
+
+    &.show {
+        display: block;
+    }
+
+    .popup {
+        position: relative;
+        top: 200px;
+        width: 600px;
+        left: calc(50% - 300px);
+        max-height: calc(100% - 400px);
+
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            margin-top: 50px;
+            justify-content: space-between;
+        }
+
+        .loader {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            width: 100%;
+            background-color: $secondary;
+            justify-content: center;
+            align-items: center;
+            display: none;
+    
+            &.show {
+                display: flex;
+            }
+        }
+    }
+}

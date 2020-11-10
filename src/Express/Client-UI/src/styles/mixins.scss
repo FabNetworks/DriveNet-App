@@ -1,0 +1,14 @@
+@mixin transform($degrees) {
+    transform: rotate($degrees);
+    -ms-transform: rotate($degrees);
+    -moz-transform: rotate($degrees);
+    -webkit-transform: rotate($degrees);
+    -o-transform: rotate($degrees);
+}
+
+@mixin animation($animation, $duration, $iterations) {
+    -webkit-animation: $animation $duration $iterations;
+    -moz-animation: $animation $duration $iterations;
+    -o-animation: $animation $duration $iterations;
+    animation: $animation $duration $iterations;
+}

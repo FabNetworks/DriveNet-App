@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="icon" width="29.316" height="24" version="1.1" viewBox="0 0 29.316 24" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <style>.cls-1{fill:none;}</style>
+ </defs>
+ <title>filter--edit</title>
+ <g fill="#1a553b">
+  <path d="m24 2h-22v3.17l7.41 7.42 0.59 0.58v8.83h4v-2h2v2a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-8l-7.41-7.41a2 2 0 0 1-0.59-1.42v-3.17a2 2 0 0 1 2-2h22z"/>
+  <rect width="24" height="2" stop-color="#000000" stroke-width="3.0027"/>
+  <rect x="8" y="22" width="2" height="2" stop-color="#000000" stroke-width="2.9937"/>
+  <rect x="14" y="22" width="2" height="2" stop-color="#000000" stroke-width="2.9937"/>
+ </g>
+ <g transform="rotate(45 21.003 12.267)" fill="#1a553b">
+  <path d="m23.124 3.6331h-4.2426a1 1 0 0 0-1.0041 1.0041l0.0071 13.145 3.1183 3.1183 3.1183-3.1183 0.0071-13.145a1 1 0 0 0-1.0041-1.0041zm-0.99702 13.315-1.1243 1.1243-1.1243-1.1243v-7.0711h2.2486zm0-9.0651h-2.2486v-2.2486h2.2486z"/>
+  <rect x="17.879" y="3.6343" width="2" height="2" stop-color="#000000" stroke-width="3"/>
+  <rect x="22.127" y="3.6343" width="2" height="2" stop-color="#000000" stroke-width="3"/>
+ </g>
+ <path d="m8 14-8-8v-1h1l8 8z" fill="#1a553b"/>
+</svg>

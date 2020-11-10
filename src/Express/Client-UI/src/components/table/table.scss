@@ -1,0 +1,204 @@
+@import "../../styles/colours.scss";
+@import "../../styles/mixins.scss";
+@import "../../styles/sizes.scss";
+
+.table-component {
+    .options {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row-reverse;
+        align-items: center;
+        margin-bottom: 10px;
+
+        .filters {
+            display: flex;
+            align-items: center;
+            justify-self: flex-end;
+
+            img {
+                height: 16px;
+                margin-right: 10px;
+            }
+
+            & > span {
+                &:not(:last-child) {
+                    margin-right: 20px;
+                }
+
+                & > * {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+
+    table {
+        width: 100%;
+        border: none;
+        border-collapse: collapse;
+
+        tr {
+            th,
+            td {
+                height: 50px;
+                vertical-align: middle;
+                text-align: left;
+                padding: 0 20px;
+                border-left: 2px solid $primary;
+                border-right: 2px solid $primary;
+
+                &.contentWidth {
+                    width: 0.1%;
+                    white-space: nowrap;
+                }
+
+                &:first-child {
+                    border-left: none;
+                }
+
+                &:last-child {
+                    border-right: none;
+                }
+            }
+
+            th {
+                position: relative;
+                font-size: map-get($fontSize, "subHeading");
+                font-weight: map-get($fontWeight, "regular");
+                border-bottom: 2px solid $primary;
+                text-transform: capitalize;
+                padding-right: 48px;
+
+                &:after {
+                    display: inline-block;
+                    content: "";
+                    position: absolute;
+                    height: 18px;
+                    width: 18px;
+                    right: 20px;
+                    background-repeat: no-repeat;
+                    background-position: center;
+
+                    background-size: auto 18px;
+                }
+
+                &:not(.disableSort) {
+                    cursor: pointer;
+
+                    &:hover {
+                        &:after {
+                            background-image: url("/icons/arrow-down.svg");
+                            opacity: 0.4;
+                        }
+                    }
+    
+                    &.sort {
+                        &:after {
+                            background-image: url("/icons/arrow-down.svg");
+                            opacity: 1 !important;
+                        }
+    
+                        &.asc {
+                            &:after {
+                                @include transform(180deg);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        tbody {
+            tr {
+                &:not(.normalCursor) {
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $secondaryHighlight;
+                    }
+                }
+
+                &.centre {
+                    td {
+                        text-align: center;
+                    }
+                }
+
+                &:nth-child(even) {
+                    background-color: $highlight;
+                }
+
+                td {
+                    &:not(.lowercase) {
+                        text-transform: capitalize;
+                    }
+                }
+            }
+
+            &.flash {
+                tr {
+                    td {
+                        span {
+                            @include animation(flickerAnimation, 1s, infinite);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .pageFinder {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+
+        & > * {
+            &:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
+
+        input[type=image] {
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+
+        .pageOption {
+            background: transparent;
+            padding: 0px 5px;
+            color: inherit;
+            border: 0;
+
+            &.selected {
+                text-decoration: underline;
+            }
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+@keyframes flickerAnimation {
+    0%   { opacity:1; }
+    50%  { opacity:0.5; }
+    100% { opacity:1; }
+}
+@-o-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0.5; }
+    100% { opacity:1; }
+}
+@-moz-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0.5; }
+    100% { opacity:1; }
+}
+@-webkit-keyframes flickerAnimation{
+    0%   { opacity:1; }
+    50%  { opacity:0.5; }
+    100% { opacity:1; }
+}

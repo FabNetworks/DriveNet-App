@@ -1,0 +1,43 @@
+@import '../../styles/colours.scss';
+
+.pageContent-component {
+    width: 100%;
+    background-color: $secondary;
+    padding: 50px;
+    box-sizing: border-box;
+    box-shadow: 7px 7px 15px 0px rgba(0,0,0,0.6);
+    -webkit-box-shadow: 7px 7px 15px 0px rgba(0,0,0,0.6);
+    -moz-box-shadow: 7px 7px 15px 0px rgba(0,0,0,0.6);
+
+    h2 {
+        margin-top: 0;
+        text-transform: capitalize;
+    }
+
+    .navigation {
+        margin-bottom: 50px;
+        width: 30px;
+
+        img {
+            cursor: pointer;
+        }
+    }
+
+    section {
+        display: flex;
+        flex-direction: column;
+
+        &:not(:last-child) {
+            margin-bottom: 50px;
+        }
+
+        .sectionHeader {
+            display: flex;
+            justify-content: space-between;
+
+        span {
+            align-self: flex-start;
+            }
+        }
+    }
+}

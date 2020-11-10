@@ -1,0 +1,41 @@
+@import './styles/colours.scss';
+@import './styles/sizes.scss';
+
+.app-component {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  min-height: 100%;
+  width: 100%;
+  background-color: $highlight;
+  
+  .background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 40%;
+    height: 100%;
+    background-color: $primary;
+  }
+
+  .content {
+    position: relative;
+    top: 0px;
+    width: 1280px;
+    left: 50%;
+    margin-left: -640px;
+    padding-bottom: 50px;
+
+    header {
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h1 {
+        color: $secondary;
+        margin: 0;
+      }
+    }
+  }
+}

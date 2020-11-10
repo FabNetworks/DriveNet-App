@@ -1,0 +1,57 @@
+@import '../../styles/colours.scss';
+
+.login-component {
+    width: 600px;
+    margin-left: 340px;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        margin-top: 30px;
+        margin-bottom: 30px;
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            margin-bottom: 10px;
+        }
+
+        button {
+            align-self: flex-end;
+            margin-top: 20px;
+        }
+    }
+
+    a {
+        &:link {
+            text-decoration: underline;
+            color: inherit;
+        }
+    
+        &:visited {
+            color: inherit;
+        }
+    
+        &:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+    
+        &:active {
+            color: inherit;
+        }
+
+        &:after {
+            content: '';
+            display: inline-block;
+            margin-left: 5px;
+            width: 12px;
+            height: 12px;
+            background-image: url('/icons/launch.svg');
+            background-size: contain;
+        }
+    }
+}
