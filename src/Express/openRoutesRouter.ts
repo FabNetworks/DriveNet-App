@@ -28,7 +28,7 @@ openRoutesRouter.post('/login', (req: Request, res: Response, next: NextFunction
   passport.authenticate('login', (err: Error, user: JWTContents) => {
     try {
       if (err || !user) {
-        const error = new Error('Failed to login: ' + err.message);
+        const error = new Error('Failed to login: ' + err?.message);
 
         return next(error);
       }

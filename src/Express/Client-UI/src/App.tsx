@@ -7,19 +7,22 @@ import { VehicleDetails, VehicleStatus } from './utils/defs';
 import { CarNumberSort, RequestWithAuthHandler } from './utils/functions';
 import { withCookies, Cookies } from 'react-cookie';
 
-enum DisplayState {
+enum DisplayState
+{
   Login,
   Home,
   Vehicle
 }
 
-interface AppProps {
+interface AppProps
+{
   cookies: Cookies;
 }
 
-interface AppState {
+interface AppState
+{
   state: DisplayState;
-  selectedVehicle?: VehicleDetails
+  selectedVehicle?: VehicleDetails;
   showUserList: boolean;
   userVehicles?: VehicleDetails[];
   networkVehicles?: VehicleDetails[];
@@ -30,7 +33,8 @@ interface AppState {
 
 class App extends React.Component<AppProps, AppState> {
 
-  constructor(props: AppProps) {
+  constructor (props: AppProps)
+  {
     super(props);
 
     const { cookies } = this.props;
@@ -44,7 +48,8 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  render() {
+  render()
+  {
     return (
       <div className="app-component">
         <div className="background" ></div>
@@ -64,19 +69,22 @@ class App extends React.Component<AppProps, AppState> {
     );
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void
+  {
     if (this.state.state === DisplayState.Home) {
       this.loadVehicles();
     }
 
-    window.addEventListener('storage', (e) => {
+    window.addEventListener('storage', (e) =>
+    {
       if (e.key === 'logout') {
         window.location.reload()
       }
     }); // if log out in another tab log this one out too
   }
 
-  public componentDidUpdate(_: AppProps, previousState: AppState) {
+  public componentDidUpdate(_: AppProps, previousState: AppState): void
+  {
     if (
       previousState.state !== DisplayState.Home && this.state.state === DisplayState.Home &&
       !this.state.networkVehicles && !this.state.userVehicles
@@ -85,7 +93,8 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private renderPageContent() {
+  private renderPageContent(): JSX.Element
+  {
     switch (this.state.state) {
       case DisplayState.Login: return this.renderLogin();
       case DisplayState.Home: return this.renderHome();
@@ -93,19 +102,22 @@ class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private renderLogin() {
+  private renderLogin(): JSX.Element
+  {
     return (
       <Login onLogin={this.handleLogin.bind(this)} />
     );
   }
 
-  private renderHome() {
+  private renderHome(): JSX.Element
+  {
     return (
       <Overview onRequestTokenRefresh={this.refreshToken.bind(this)} currentUser={this.state.currentUser as string} currentUserToken={this.state.currentUserToken as string} userVehicles={this.state.userVehicles} networkVehicles={this.state.networkVehicles} onRequestVehicleDetails={(vehicle: VehicleDetails) => this.setState({ state: DisplayState.Vehicle, selectedVehicle: vehicle })} />
     );
   }
 
-  private renderVehicle() {
+  private renderVehicle(): JSX.Element
+  {
     if (!this.state.selectedVehicle) {
       throw new Error('Cannot render vehicle without vehicle selected');
     }
@@ -115,9 +127,10 @@ class App extends React.Component<AppProps, AppState> {
     )
   }
 
-  private handleLogin(user: string, token: string, expiresIn: number, stayOnCurrentPage: boolean = false) {
-    this.props.cookies.set('token', token, {sameSite: true});
-    this.props.cookies.set('user', user, {sameSite: true});
+  private handleLogin(user: string, token: string, expiresIn: number, stayOnCurrentPage: boolean = false): void
+  {
+    this.props.cookies.set('token', token, { sameSite: true });
+    this.props.cookies.set('user', user, { sameSite: true });
 
     if (this.state.refreshTokenTimeout) {
       clearTimeout(this.state.refreshTokenTimeout);
@@ -135,7 +148,8 @@ class App extends React.Component<AppProps, AppState> {
     });
   }
 
-  private handleLogout() {
+  private handleLogout(): void
+  {
     this.props.cookies.remove('token');
     this.props.cookies.remove('user');
 
@@ -143,40 +157,49 @@ class App extends React.Component<AppProps, AppState> {
       clearTimeout(this.state.refreshTokenTimeout);
     }
 
-    window.localStorage.setItem('logout', Date.now().toString()); 
+    window.localStorage.setItem('logout', Date.now().toString());
 
     window.location.reload();
   }
 
-  private async refreshToken(): Promise<string> {
+  private async refreshToken(logout: boolean): Promise<string>
+  {
     const user = this.state.currentUser as string;
     const token = this.state.currentUserToken as string;
 
-
-    const headers = new Headers();
-    headers.append('Authorization', 'Bearer ' + token);
-
-    const response = await fetch(`/api/v1/refresh-token`, {headers});
-
-    if (!response.status.toString().startsWith('2')) {
+    if (logout) {
+      alert('Token expired, must log in again');
+       // This alert is OK without a reload as handleLogout() will do one
       this.handleLogout();
 
       return '';
+    } else {
+      const headers = new Headers();
+      headers.append('Authorization', 'Bearer ' + token);
+
+      const response = await fetch(`/api/v1/refresh-token`, { headers });
+
+      if (!response.status.toString().startsWith('2')) {
+        this.handleLogout();
+
+        return '';
+      }
+
+      const json = await response.json();
+
+      this.handleLogin(user, json.token, json.expiresIn, true);
+      return json.token;
     }
-
-    const json = await response.json();
-
-    this.handleLogin(user, json.token, json.expiresIn, true);
-
-    return json.token;
   }
 
-  private async loadVehicles(): Promise<void> {
+  private async loadVehicles(): Promise<void>
+  {
     await this.loadYourVehicles();
     await this.loadNetworkVehicles();
   }
 
-  private async loadYourVehicles(): Promise<void> {
+  private async loadYourVehicles(): Promise<void>
+  {
     const currentUser = this.state.currentUser as string;
     const token = this.state.currentUserToken as string;
 
@@ -184,45 +207,66 @@ class App extends React.Component<AppProps, AppState> {
       const userVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/user/vehicles', token, this.refreshToken.bind(this));
       const ownedVehicles: VehicleDef[] = await RequestWithAuthHandler(`/api/v1/${currentUser}/vehicles`, token, this.refreshToken.bind(this));
 
-      const yourVehiclesTableData: VehicleDetails[] = userVehicles.map((vehicle) => {
-        return this.vehicleToVehicleDetails(vehicle);
-      });
+      if (userVehicles) {
+        const yourVehiclesTableData: VehicleDetails[] = userVehicles.map((vehicle) =>
+        {
+          return this.vehicleToVehicleDetails(vehicle);
+        });
 
-      ownedVehicles.forEach((vehicle) => {
-        if (vehicle.car.certOwner !== currentUser && vehicle.car.owner === currentUser) {
-          yourVehiclesTableData.push(this.vehicleToVehicleDetails(vehicle));
+        if (ownedVehicles) {
+          ownedVehicles.forEach((vehicle) =>
+          {
+            if (vehicle.car.certOwner !== currentUser && vehicle.car.owner === currentUser) {
+              yourVehiclesTableData.push(this.vehicleToVehicleDetails(vehicle));
+            }
+
+            // others already found in first fetch
+          });
         }
 
-        // others already found in first fetch
-      });
-
-      this.setState({
-        userVehicles: yourVehiclesTableData.sort((a, b) => CarNumberSort(a.key, b.key))
-      });
+        this.setState({
+          userVehicles: yourVehiclesTableData.sort((a, b) => CarNumberSort(a.key, b.key))
+        });
+      } else {
+        this.setState({
+          userVehicles: []
+        });
+      }
     } catch (err) {
-      alert('Failed to retrieve user vehicles');
+      alert('Unable to retrieve user cars');
+      window.location.reload();
     }
   }
 
-  private async loadNetworkVehicles(): Promise<void> {    
+  private async loadNetworkVehicles(): Promise<void>
+  {
     const token = this.state.currentUserToken as string;
 
     try {
-      const networkVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/vehicles', token, this.refreshToken);
-  
-      const networkVehiclesTableData: VehicleDetails[] = networkVehicles.map((vehicle) => {
-        return this.vehicleToVehicleDetails(vehicle);
-      });
-  
-      this.setState({
-        networkVehicles: networkVehiclesTableData.sort((a, b) => CarNumberSort(a.key, b.key))
-      });
-    } catch(err) {
-      alert('Failed to retrieve user vehicles');
+      const networkVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/vehicles', token, this.refreshToken.bind(this));
+
+      if (networkVehicles) {
+        const networkVehiclesTableData: VehicleDetails[] = networkVehicles.map((vehicle) =>
+        {
+          return this.vehicleToVehicleDetails(vehicle);
+        });
+
+        this.setState({
+          networkVehicles: networkVehiclesTableData.sort((a, b) => CarNumberSort(a.key, b.key))
+        });
+      } else {
+        this.setState({
+          networkVehicles: []
+        });
+      }
+    } catch (err) {
+      alert('Failed to retrieve user cars');
+      window.location.reload();
     }
   }
 
-  private vehicleToVehicleDetails(vehicle: VehicleDef): VehicleDetails {
+  private vehicleToVehicleDetails(vehicle: VehicleDef): VehicleDetails
+  {
     const currentUser = this.state.currentUser as string
 
     if (vehicle.car.certOwner === currentUser) {

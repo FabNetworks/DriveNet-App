@@ -18,7 +18,7 @@ export class FabricProxy {
     }
 
     public async ensureIdentity(user: string, secret: string): Promise<string> {
-      const wallet = await this.getWallet();
+      const wallet = this.getWallet();
       const walletKey = crypto.createHash('sha512').update(user + secret + HashSalt).digest('hex');
 
       if (!(await wallet.exists(walletKey))) {
@@ -46,8 +46,8 @@ export class FabricProxy {
       try {
         await contract.submitTransaction(functionName, ...args);
       } catch (err) {
-        if (err.endorsements && err.endorsements.length > 0) {
-          throw new Error(err.endorsements[0].message.split('Error: ')[1]);
+        if (err.endorsements && err.endorsements.length > 0) { // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+          throw new Error(err.endorsements[0].message.split('Error: ')[1]); // eslint-disable-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         }
 
         throw err;
@@ -69,7 +69,7 @@ export class FabricProxy {
       return transaction;
     }
 
-    private async getWallet(): Promise<FileSystemWallet> {
+    private getWallet(): FileSystemWallet {
       if (!this.wallet) {
         const walletPath = path.join(__dirname, 'wallet');
         this.wallet = new FileSystemWallet(walletPath);
@@ -79,7 +79,7 @@ export class FabricProxy {
     }
 
     private async enrollUser(user: string, secret: string, walletKey: string): Promise<void> {
-      const wallet = await this.getWallet();
+      const wallet = this.getWallet();
 
       const caInfo = ConnectionProfile.certificateAuthorities['Community CA'];
       const caTLSCACerts = Buffer.from(caInfo.tlsCACerts.pem[0]);
@@ -98,9 +98,9 @@ export class FabricProxy {
         return this.gateways.get(walletKey) as Gateway;
       }
 
-      const wallet = await this.getWallet();
+      const wallet = this.getWallet();
 
-      if (!wallet.exists(walletKey)) {
+      if ( ! await wallet.exists(walletKey)) {
         throw new Error(`Identity not found in wallet for key ${walletKey}`);
       }
 

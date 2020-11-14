@@ -4,7 +4,7 @@ import './dropdown.scss';
 interface DropdownProps {
     title: string;
     keepTextFormat?: boolean;
-    choices: {name: string, action: () => void}[]
+    choices: {name: string, action: () => void}[];
 }
 
 interface DropdownState {
@@ -13,13 +13,13 @@ interface DropdownState {
 }
 
 export class Dropdown extends React.Component<DropdownProps, DropdownState> {
-    constructor(props: DropdownProps) {
+    public constructor(props: DropdownProps) {
         super(props);
 
         this.state = {
             showingMenu: false,
             id: Math.random().toString(36).substr(2, 9)
-        }
+        };
     }
 
     public render(): JSX.Element {
@@ -39,12 +39,12 @@ export class Dropdown extends React.Component<DropdownProps, DropdownState> {
         }
     }
 
-    private showMenu(addListener: boolean = true): void {
+    private showMenu(addListener = true): void {
         this.setState({
             showingMenu: !this.state.showingMenu
         });
 
-        const addOutsideListener = (e: MouseEvent | KeyboardEvent) => {
+        const addOutsideListener = (e: MouseEvent | KeyboardEvent): void => {
             const spanElement = document.getElementById(this.state.id);
 
             if (e.target !== spanElement) {

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { PageContent, Table, Popup, Loading } from '../../components';
+import { PageContent, Table, Popup } from '../../components';
 import { PopupType } from '../../components/popup/Popup';
 import { ColumnProps, DataProps, FilterType } from '../../components/table/Table';
 import './overview.scss';
@@ -73,7 +73,7 @@ interface OverviewProps {
     networkVehicles?: VehicleDetails[];
     currentUser: string;
     currentUserToken: string;
-    onRequestTokenRefresh(): Promise<string>;
+    onRequestTokenRefresh(logout: boolean): Promise<string>;
 }
 
 interface OverviewState {
@@ -254,8 +254,8 @@ export class Overview extends React.Component<OverviewProps, OverviewState> {
             window.location.reload();
         } catch (err) {
             console.log(err);
-
-            alert('Unable to create vehicle');
+            alert('Unable to create vehicle: ' + err.message);
+            window.location.reload();
         }
     }
 

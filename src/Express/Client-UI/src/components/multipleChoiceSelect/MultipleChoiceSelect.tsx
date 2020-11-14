@@ -20,7 +20,7 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
     private selectedRef: React.RefObject<HTMLSpanElement>;
     private readonly canvasContext: CanvasRenderingContext2D;
 
-    constructor(props: MultipleChoiceSelectProps) {
+    public constructor(props: MultipleChoiceSelectProps) {
         super(props);
 
         this.ulRef = React.createRef<HTMLUListElement>();
@@ -32,7 +32,7 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
             selected: [],
             id: Math.random().toString(36).substr(2, 9),
             ulOverflowing: false
-        }
+        };
 
         const canvas = document.createElement('canvas');
 
@@ -42,7 +42,7 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
         this.canvasContext = context;
     }
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return (
             <div className={`multipleChoiceSelect-component ${this.state.showingMenu ? 'show' : ''}`} >
                 <span ref={this.selectedRef} id={this.state.id} tabIndex={0} className="selected" onKeyPress={(e) => this.handleKeyPress(e, this.showMenu.bind(this))} onClick={() => this.showMenu()} >{this.state.selected.length === 0 ? 'Any' : this.state.selected.length === 1 ? this.state.selected[0] : 'Multiple' }</span>
@@ -63,11 +63,11 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
         )
     }
 
-    componentDidMount() {
+    public componentDidMount() {
         this.handleUlSizing();
     }
 
-    componentDidUpdate(previousProps: MultipleChoiceSelectProps) {
+    public componentDidUpdate(previousProps: MultipleChoiceSelectProps) {
         if (this.props.choices.length !== previousProps.choices.length) {
             this.handleUlSizing();
         }
@@ -77,7 +77,7 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
         if(this.ulRef.current  && this.selectedRef.current) {
             const el: HTMLUListElement = this.ulRef.current;
 
-            var isOverflowing = el.clientHeight < el.scrollHeight;    
+            const isOverflowing = el.clientHeight < el.scrollHeight;
 
             this.setState({
                 ulOverflowing: isOverflowing
@@ -85,25 +85,25 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
 
             const longest = this.props.choices.reduce((a, b) => a.toString().length > b.toString().length ? a : b);
             const textWidth = Math.max(this.canvasContext.measureText(longest.toString()).width, 130); // 130 to allow for textbox at width 140 - padding
-            
+
             this.selectedRef.current.style.minWidth = (textWidth + 44) + 'px';
             this.ulRef.current.style.minWidth = (textWidth + 40) + 'px';
         }
     }
 
-    private handleKeyPress(e: React.KeyboardEvent, action: () => void) {
+    private handleKeyPress(e: React.KeyboardEvent, action: () => void): void {
         if (e.key === 'Enter') {
             action();
         }
     }
 
-    private showMenu(addListener: boolean = true): void {
+    private showMenu(addListener = true): void {
         this.setState({
             searchText: '',
             showingMenu: !this.state.showingMenu
         });
 
-        const addOutsideListener = (e: MouseEvent | KeyboardEvent) => {           
+        const addOutsideListener = (e: MouseEvent | KeyboardEvent): void => {
             const targetId = (e.target as any).id as string | undefined;
 
             if (!targetId || !targetId.startsWith(this.state.id)) {
@@ -122,7 +122,7 @@ export class MultipleChoiceSelect extends React.Component<MultipleChoiceSelectPr
         }
     }
 
-    private handleSelect(checked: boolean, choice: string | number) {
+    private handleSelect(checked: boolean, choice: string | number): void {
         let selected = ([] as (string | number)[]).concat(this.state.selected);
 
         if (checked) {

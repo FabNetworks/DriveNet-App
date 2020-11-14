@@ -11,19 +11,24 @@ const fabricProxy = new FabricProxy();
 passport.use('login', new LocalStrategy({
   usernameField: 'enrollmentUserId',
   passwordField: 'enrollmentSecret'
-},
-async (userId: string, secret: string, done: (err: any, user?: JWTContents) => void) => {
-  try {
-    const walletKey = await fabricProxy.ensureIdentity(userId, secret);
+}, (userId: string, secret: string, done: (err: any, user?: JWTContents) => void): void =>
+{
+  // use void operator and nested async to prevent eslint warning
+  void (async (): Promise<void> =>
+  {
+    try {
+      const walletKey = await fabricProxy.ensureIdentity(userId, secret);
 
-    done(null, {userId, walletKey});
-  } catch (err) {
-    done(err);
-  }
+      done(null, { userId, walletKey });
+    } catch (err) {
+      done(err);
+    }
+  })();
 })
 );
 
-const tokenValidationHandler = async (token: JWTContents | null, done: (err: any, token?: JWTContents) => void) => {
+const tokenValidationHandler = (token: JWTContents | null, done: (err: any, token?: JWTContents) => void) =>
+{
   try {
     if (!token) {
       throw new Error('No token signed by this server found');
@@ -54,16 +59,19 @@ passport.use('expiredUserToken',
 passport.use('refreshToken',
   new JWTStrategy({
     secretOrKey: SigningSecret,
-    jwtFromRequest: (req: Request): string | null => {
+    jwtFromRequest: (req: Request): string | null =>
+    {
       let token: string | null = null;
 
       if (req && req.cookies) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         token = req.cookies.refreshToken || null;
       }
 
       return token;
     }
-  }, async (token: {refresh: boolean} | null, done: (err: any, token?: {refresh: boolean}) => void) => {
+  }, (token: { refresh: boolean } | null, done: (err: any, token?: { refresh: boolean }) => void) =>
+  {
     try {
       if (!token) {
         throw new Error('No token signed by this server found');

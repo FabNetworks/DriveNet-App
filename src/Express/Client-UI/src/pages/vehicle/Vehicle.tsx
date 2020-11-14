@@ -29,7 +29,7 @@ interface VehicleProps {
     vehicle: VehicleDetails;
     currentUser: string;
     currentUserToken: string;
-    onRequestTokenRefresh(): Promise<string>;
+    onRequestTokenRefresh(logout: boolean): Promise<string>;
 }
 
 interface VehicleState {
@@ -173,20 +173,28 @@ export class Vehicle extends React.Component<VehicleProps, VehicleState> {
         try {
             const previousOwners: VehicleOwner[] = await RequestWithAuthHandler(`/api/v1/${this.props.vehicle.key}/history`, this.props.currentUserToken, this.props.onRequestTokenRefresh);
 
-            const previousOwnersTableData: DataProps<HistoryTableColumnAccessors>[] = previousOwners.map((previousOwner) => {
-                if (!previousOwner.to) {
-                    previousOwner.to = DateString.Present;
-                }
+            if(previousOwners) {
+                const previousOwnersTableData: DataProps<HistoryTableColumnAccessors>[] = previousOwners.map((previousOwner) => {
+                    if (!previousOwner.to) {
+                        previousOwner.to = DateString.Present;
+                    }
 
-                return previousOwner as DataProps<HistoryTableColumnAccessors>;
-            });
+                    return previousOwner as DataProps<HistoryTableColumnAccessors>;
+                });
 
-            this.setState({
-                loaded: true,
-                previousOwners: previousOwnersTableData.sort((a, b) => a.to > b.to ? -1 : a.to === b.to ? 0 : 1)
-            });
+                this.setState({
+                    loaded: true,
+                    previousOwners: previousOwnersTableData.sort((a, b) => a.to > b.to ? -1 : a.to === b.to ? 0 : 1)
+                });
+            } else {
+                this.setState({
+                    loaded: false,
+                    previousOwners: PendingHistoryTableData
+                });
+            }
         } catch (err) {
             alert('Failed to get history for car');
+            window.location.reload();
         }
     }
 
@@ -209,6 +217,7 @@ export class Vehicle extends React.Component<VehicleProps, VehicleState> {
             console.log(err);
 
             alert('Unable to change ownership of car');
+            window.location.reload();
         }
     }
 
@@ -221,6 +230,7 @@ export class Vehicle extends React.Component<VehicleProps, VehicleState> {
             console.log(err);
 
             alert('Unable to confirm ownership of car');
+            window.location.reload();
         }
     }
 
@@ -233,6 +243,7 @@ export class Vehicle extends React.Component<VehicleProps, VehicleState> {
             console.log(err);
 
             alert('Unable to delete car');
+            window.location.reload();
         }
     }
 }

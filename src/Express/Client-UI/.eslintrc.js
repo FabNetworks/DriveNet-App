@@ -23,18 +23,18 @@ module.exports = {
       // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
       // e.g. "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-unused-vars": ["error", {"args": "all", "argsIgnorePattern": "^_$"}], // Allow unused to be an underscore
-      "import/order": ["error", {alphabetize: {order: 'asc', caseInsensitive: true }}],
+      "import/order": ["warn", {alphabetize: {order: 'asc', caseInsensitive: true }}],
       "import/no-named-as-default": 0,
       "semi": ["error", "always"],
       "no-trailing-spaces": ["error"],
       "padding-line-between-statements": ["error", { blankLine: "always", prev: "*", next: ["return", "block-like"] }],
       "lines-between-class-members": ["error", "always"],
       "padded-blocks": ["error", "never"],
-      "indent": ["error", 4],
+      "indent": ["warn", 2],
       "react/prop-types": ["error", { ignore: ['children'] }],
       "eol-last": ["error", "always"],
       "camelcase": "error",
       "@typescript-eslint/explicit-member-accessibility": ["error"],
-      "brace-style": "error"
+      "brace-style": "warn"
     },
   };

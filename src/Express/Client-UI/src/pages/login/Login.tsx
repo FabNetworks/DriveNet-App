@@ -27,7 +27,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
             title: 'sign in',
             content: (
                 <Fragment >
-                    Sign in to DriveNet using your user ID and password.
+                    Sign in to DriveNet using your Application user ID and password.
                     <form onSubmit={this.login.bind(this)} >
                         <label>User ID:</label>
                         <input type="text" onChange={this.handleUserIdChange.bind(this)} />
@@ -39,7 +39,7 @@ export class Login extends React.Component<LoginProps, LoginState> {
                             Sign in
                         </button>
                     </form>
-                    <p>Forgotten your credentials or have yet to get them? Head over to <a href="https://fabnetworks.org/networks/drivenet" >FabNetworks.org</a> and follow the instructions to join DriveNet.</p>
+                    <p>Forgotten your credentials or have yet to get them? Head over to <a href="https://fabnetworks.org/registries/default/networks/DriveNet" >FabNetworks.org</a> and follow the instructions to join DriveNet.</p>
                 </Fragment>
             )
         }];
@@ -81,10 +81,10 @@ export class Login extends React.Component<LoginProps, LoginState> {
 
         if (!response.status.toString().startsWith('2')) {
             alert('Login failure. Are you sure the user ID and password are correct?');
+            // This alert is OK without a reload
+        } else {
+          const { token, expiresIn} = await response.json();
+          this.props.onLogin(this.state.userId, token, expiresIn);
         }
-
-        const { token, expiresIn} = await response.json();
-
-        this.props.onLogin(this.state.userId, token, expiresIn);
     }
 }
