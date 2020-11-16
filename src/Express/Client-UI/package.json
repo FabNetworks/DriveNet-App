@@ -12,6 +12,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint src/*.tsx src/**/*.tsx",
+    "lint:fix": "eslint src/*.tsx src/**/*.tsx --fix",
     "postbuild": "node utils/postbuild.js"
   },
   "eslintConfig": {

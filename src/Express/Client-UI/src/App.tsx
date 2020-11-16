@@ -1,10 +1,10 @@
-import React from 'react';
 import './app.scss';
+import { Vehicle as VehicleDef } from '../../../Utils/defs';
 import { Dropdown } from './components';
 import { Login, Overview, Vehicle } from './pages';
-import { Vehicle as VehicleDef } from '../../../Utils/defs';
 import { VehicleDetails, VehicleStatus } from './utils/defs';
 import { CarNumberSort, RequestWithAuthHandler } from './utils/functions';
+import React from 'react';
 import { withCookies, Cookies } from 'react-cookie';
 
 enum DisplayState
@@ -32,23 +32,21 @@ interface AppState
 }
 
 class App extends React.Component<AppProps, AppState> {
-
-  constructor (props: AppProps)
+  public constructor (props: AppProps)
   {
     super(props);
 
     const { cookies } = this.props;
 
     this.state = {
-      state: cookies.get('token') ? DisplayState.Home : DisplayState.Login,
+      state: cookies.get<string>('token') ? DisplayState.Home : DisplayState.Login,
       showUserList: false,
-      currentUser: cookies.get('user'),
-      currentUserToken: cookies.get('token'),
-
-    }
+      currentUser: cookies.get<string>('user'),
+      currentUserToken: cookies.get<string>('token'),
+    };
   }
 
-  render()
+  public render(): JSX.Element
   {
     return (
       <div className="app-component">
@@ -69,37 +67,37 @@ class App extends React.Component<AppProps, AppState> {
     );
   }
 
-  public componentDidMount(): void
+  public async componentDidMount(): Promise<void>
   {
     if (this.state.state === DisplayState.Home) {
-      this.loadVehicles();
+      await this.loadVehicles();
     }
 
     window.addEventListener('storage', (e) =>
     {
       if (e.key === 'logout') {
-        window.location.reload()
+        window.location.reload();
       }
-    }); // if log out in another tab log this one out too
+    }); // TODO: if log out in another tab log this one out too
   }
 
-  public componentDidUpdate(_: AppProps, previousState: AppState): void
+  public async componentDidUpdate(_appProps: AppProps, previousState: AppState): Promise<void>
   {
     if (
       previousState.state !== DisplayState.Home && this.state.state === DisplayState.Home &&
       !this.state.networkVehicles && !this.state.userVehicles
     ) {
-      this.loadVehicles();
+      await this.loadVehicles();
     }
   }
 
   private renderPageContent(): JSX.Element
   {
-    switch (this.state.state) {
+    switch (this.state.state) { /* eslint-disable indent */
       case DisplayState.Login: return this.renderLogin();
       case DisplayState.Home: return this.renderHome();
       case DisplayState.Vehicle: return this.renderVehicle();
-    }
+    } /* eslint-enable indent */
   }
 
   private renderLogin(): JSX.Element
@@ -112,7 +110,7 @@ class App extends React.Component<AppProps, AppState> {
   private renderHome(): JSX.Element
   {
     return (
-      <Overview onRequestTokenRefresh={this.refreshToken.bind(this)} currentUser={this.state.currentUser as string} currentUserToken={this.state.currentUserToken as string} userVehicles={this.state.userVehicles} networkVehicles={this.state.networkVehicles} onRequestVehicleDetails={(vehicle: VehicleDetails) => this.setState({ state: DisplayState.Vehicle, selectedVehicle: vehicle })} />
+      <Overview onRequestTokenRefresh={this.refreshToken.bind(this)} currentUser={this.state.currentUser as string} currentUserToken={this.state.currentUserToken as string} userVehicles={this.state.userVehicles} networkVehicles={this.state.networkVehicles} onRequestVehicleDetails={(vehicle: VehicleDetails): void => this.setState({ state: DisplayState.Vehicle, selectedVehicle: vehicle })} />
     );
   }
 
@@ -123,11 +121,11 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     return (
-      <Vehicle onRequestTokenRefresh={this.refreshToken.bind(this)} currentUser={this.state.currentUser as string} currentUserToken={this.state.currentUserToken as string} vehicle={this.state.selectedVehicle} onRequestOverview={() => this.setState({ state: DisplayState.Home })} />
-    )
+      <Vehicle onRequestTokenRefresh={this.refreshToken.bind(this)} currentUser={this.state.currentUser as string} currentUserToken={this.state.currentUserToken as string} vehicle={this.state.selectedVehicle} onRequestOverview={(): void => this.setState({ state: DisplayState.Home })} />
+    );
   }
 
-  private handleLogin(user: string, token: string, expiresIn: number, stayOnCurrentPage: boolean = false): void
+  private handleLogin(user: string, token: string, _expiresIn: number, stayOnCurrentPage = false): void
   {
     this.props.cookies.set('token', token, { sameSite: true });
     this.props.cookies.set('user', user, { sameSite: true });
@@ -169,7 +167,7 @@ class App extends React.Component<AppProps, AppState> {
 
     if (logout) {
       alert('Token expired, must log in again');
-       // This alert is OK without a reload as handleLogout() will do one
+      // This alert is OK without a reload as handleLogout() will do one
       this.handleLogout();
 
       return '';
@@ -177,7 +175,7 @@ class App extends React.Component<AppProps, AppState> {
       const headers = new Headers();
       headers.append('Authorization', 'Bearer ' + token);
 
-      const response = await fetch(`/api/v1/refresh-token`, { headers });
+      const response = await fetch('/api/v1/refresh-token', { headers });
 
       if (!response.status.toString().startsWith('2')) {
         this.handleLogout();
@@ -185,10 +183,11 @@ class App extends React.Component<AppProps, AppState> {
         return '';
       }
 
-      const json = await response.json();
+      const json = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
-      this.handleLogin(user, json.token, json.expiresIn, true);
-      return json.token;
+      this.handleLogin(user, json.token, json.expiresIn, true); // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+
+      return json.token; // eslint-disable-line @typescript-eslint/no-unsafe-member-access
     }
   }
 
@@ -204,8 +203,8 @@ class App extends React.Component<AppProps, AppState> {
     const token = this.state.currentUserToken as string;
 
     try {
-      const userVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/user/vehicles', token, this.refreshToken.bind(this));
-      const ownedVehicles: VehicleDef[] = await RequestWithAuthHandler(`/api/v1/${currentUser}/vehicles`, token, this.refreshToken.bind(this));
+      const userVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/user/vehicles', token, this.refreshToken.bind(this)); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+      const ownedVehicles: VehicleDef[] = await RequestWithAuthHandler(`/api/v1/${currentUser}/vehicles`, token, this.refreshToken.bind(this)); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
       if (userVehicles) {
         const yourVehiclesTableData: VehicleDetails[] = userVehicles.map((vehicle) =>
@@ -243,7 +242,7 @@ class App extends React.Component<AppProps, AppState> {
     const token = this.state.currentUserToken as string;
 
     try {
-      const networkVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/vehicles', token, this.refreshToken.bind(this));
+      const networkVehicles: VehicleDef[] = await RequestWithAuthHandler('/api/v1/vehicles', token, this.refreshToken.bind(this)); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
       if (networkVehicles) {
         const networkVehiclesTableData: VehicleDetails[] = networkVehicles.map((vehicle) =>
@@ -267,7 +266,7 @@ class App extends React.Component<AppProps, AppState> {
 
   private vehicleToVehicleDetails(vehicle: VehicleDef): VehicleDetails
   {
-    const currentUser = this.state.currentUser as string
+    const currentUser = this.state.currentUser as string;
 
     if (vehicle.car.certOwner === currentUser) {
       if (vehicle.car.owner === currentUser) {

@@ -17,7 +17,7 @@
     "nodeshift-build": "nodeshift build",
     "nodeshift-apply": "nodeshift apply-resource",
     "nodeshift-undeploy": "nodeshift undeploy",
-    "nodemon": "nodemon --watch dist --exec npm start",
+    "nodemon": "nodemon --watch dist --delay 5 --exec npm start",
     "start": "node dist/src/drivenet.js serve",
     "get-details": "node utils/get-details.js",
     "version": "npm run get-details"
