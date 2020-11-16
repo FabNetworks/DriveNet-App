@@ -162,33 +162,33 @@ class App extends React.Component<AppProps, AppState> {
 
   private async refreshToken(logout: boolean): Promise<string>
   {
-    const user = this.state.currentUser as string;
-    const token = this.state.currentUserToken as string;
-
     if (logout) {
       alert('Token expired, must log in again');
       // This alert is OK without a reload as handleLogout() will do one
       this.handleLogout();
 
       return '';
-    } else {
-      const headers = new Headers();
-      headers.append('Authorization', 'Bearer ' + token);
+    } 
+    
+    const user = this.state.currentUser as string;
+    const token = this.state.currentUserToken as string;
+    const headers = new Headers();
+    headers.append('Authorization', 'Bearer ' + token);
 
-      const response = await fetch('/api/v1/refresh-token', { headers });
+    const response = await fetch('/api/v1/refresh-token', { headers });
 
-      if (!response.status.toString().startsWith('2')) {
-        this.handleLogout();
+    if (!response.status.toString().startsWith('2')) {
+      this.handleLogout();
 
-        return '';
-      }
-
-      const json = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-
-      this.handleLogin(user, json.token, json.expiresIn, true); // eslint-disable-line @typescript-eslint/no-unsafe-member-access
-
-      return json.token; // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+      return '';
     }
+
+    const json = await response.json(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+
+    this.handleLogin(user, json.token, json.expiresIn, true); // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+
+    return json.token; // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+  
   }
 
   private async loadVehicles(): Promise<void>
