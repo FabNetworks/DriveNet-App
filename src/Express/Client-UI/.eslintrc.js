@@ -25,7 +25,6 @@ module.exports = {
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "args": "all", "argsIgnorePattern": "^_" }], // Allow unused to be an underscore
     "@typescript-eslint/no-use-before-define": ["error", "nofunc"], // means functions false, classes true, variables true
-    "import/order": ["warn", { alphabetize: { order: 'asc', caseInsensitive: true } }],
     "import/no-named-as-default": 0,
     "semi": ["warn", "always"],
     "no-trailing-spaces": ["warn"],
