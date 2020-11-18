@@ -84,3 +84,5 @@ notes.txt
 nodeshift-notes.txt
 /drivenet-details.json
 /drivenet-gateway.json
+out/linecounter.json
+out/linecounter.txt
