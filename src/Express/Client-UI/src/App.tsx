@@ -168,8 +168,8 @@ class App extends React.Component<AppProps, AppState> {
       this.handleLogout();
 
       return '';
-    } 
-    
+    }
+
     const user = this.state.currentUser as string;
     const token = this.state.currentUserToken as string;
     const headers = new Headers();
@@ -188,7 +188,6 @@ class App extends React.Component<AppProps, AppState> {
     this.handleLogin(user, json.token, json.expiresIn, true); // eslint-disable-line @typescript-eslint/no-unsafe-member-access
 
     return json.token; // eslint-disable-line @typescript-eslint/no-unsafe-member-access
-  
   }
 
   private async loadVehicles(): Promise<void>
